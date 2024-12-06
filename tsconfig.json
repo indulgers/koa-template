@@ -1,15 +1,22 @@
 {
+  // Disable schema validation to avoid network issues
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "compilerOptions": {
-    "module": "commonjs",
-    "declaration": false,
-    "removeComments": true,
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"],
+      "@/config/*": ["src/config/*"],
+      "@/entity/*": ["src/entity/*"]
+    },
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es6",
-    "sourceMap": false,
-    "outDir": "./dist",
-    "baseUrl": "./"
+    "strict": true,
+    "lib": ["es6"],
+    "types": ["node"]
   },
+  "include": ["src"],
   "exclude": ["node_modules"]
-  // "include": ["ormconfig.json"]
 }

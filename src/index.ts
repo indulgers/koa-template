@@ -1,25 +1,35 @@
-import 'reflect-metadata';
-import * as Koa from 'koa';
-import { createConnection } from 'typeorm';
-import * as Router from 'koa-router';
-import * as bodyParser from 'koa-bodyparser';
-import AppRoutes from './routes';
+import "reflect-metadata";
+import Koa from "koa";
+import { AppDataSource } from "./config/data-source";
+import Router from "koa-router";
+import bodyParser from "koa-bodyparser";
+import { createServer } from 'http';
+import AppRoutes from "./routes";
+import { config, db } from "./config";
+import { createSocketServer } from './SocketServer';
 
-createConnection()
-  .then(async connection => {
-    // create koa app
-    const app = new Koa();
-    const router = new Router();
-    const port = process.env.PORT || 3000;
+AppDataSource.initialize();
 
-    // register all application routes
-    AppRoutes.forEach(route => router[route.method](route.path, route.action));
+const init = async () => {
+  const router = new Router();
+  const port = config.port;
+  // create koa app
+  const app = new Koa();
+  const server = createServer(app.callback())
+  // register all application routes
+  AppRoutes.forEach((route) => router[route.method](route.path, route.action)
+  );
 
-    app.use(bodyParser());
-    app.use(router.routes());
-    app.use(router.allowedMethods());
-    app.listen(port);
+  app.use(bodyParser());
+  app.use(router.routes());
+  app.use(router.allowedMethods());
 
-    console.log(`应用启动成功 端口:${port}`);
-  })
-  .catch(error => console.log('TypeORM 链接失败: ', error));
+
+  createSocketServer({ server });
+
+  app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+  });
+};
+
+init().catch((error) => console.log("TypeORM connection error: ", error));

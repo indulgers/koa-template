@@ -1,6 +1,8 @@
 {
   "name": "ts-koa-starter",
   "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
   "description": "一个简单的koa+typescript+typeorm的起手式",
   "tags": [
     "orm",
@@ -9,17 +11,28 @@
     "koa"
   ],
   "scripts": {
-    "start": "NODE_ENV=dev nodemon",
+    "start": "NODE_ENV=dev nodemon --watch src -e ts,tsx --exec ts-node src/index.ts",
     "build": "rm -rf dist && tsc",
     "pro": "node_modules/.bin/pm2 start --env=production",
     "stop": "node_modules/.bin/pm2 stop all"
   },
   "dependencies": {
-    "koa": "^2.7.0",
-    "koa-bodyparser": "^4.2.1",
+    "@koa/cors": "^3.0.0",
+    "@koa/router": "^12.0.0",
+    "@types/ws": "^8.5.13",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.7",
+    "koa": "^2.11.0",
+    "koa-bodyparser": "^4.3.0",
+    "koa-jwt": "^4.0.4",
     "koa-router": "^7.4.0",
-    "mysql": "^2.17.1",
-    "typeorm": "^0.2.17"
+    "koa-websocket": "^7.0.0",
+    "mysql": "^2.18.1",
+    "mysql2": "^3.11.5",
+    "reflect-metadata": "^0.1.13",
+    "typeorm": "^0.3.12",
+    "uuid": "^11.0.3",
+    "ws": "^8.18.0"
   },
   "devDependencies": {
     "@types/koa": "^2.0.48",
@@ -28,8 +41,8 @@
     "@types/node": "^12.0.0",
     "nodemon": "^1.19.0",
     "pm2": "^3.5.0",
-    "ts-node": "^8.1.0",
-    "tsconfig-paths": "^3.8.0",
+    "ts-node": "^8.10.2",
+    "tsconfig-paths": "^3.15.0",
     "typescript": "^3.4.5"
   }
 }
