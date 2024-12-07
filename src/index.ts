@@ -8,7 +8,7 @@ import AppRoutes from "./routes";
 import { config, db } from "./config";
 import { createSocketServer } from './SocketServer';
 
-AppDataSource.initialize();
+// AppDataSource.initialize();
 
 const init = async () => {
   const router = new Router();
@@ -24,7 +24,7 @@ const init = async () => {
   app.use(router.routes());
   app.use(router.allowedMethods());
 
-
+  await AppDataSource.initialize(); 
   createSocketServer({ server });
 
   app.listen(port, () => {

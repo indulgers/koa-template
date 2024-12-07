@@ -12,7 +12,9 @@ export function createSocketServer(
     ) => any
 ) {
     const server = new Server(options);
-
+    server.on('listening', () => {
+        console.log(`[WebSocket] Server is running on port ${server.options.port}`);
+    });
     server.on('connection', (socket, request) => {
         sockets.push(socket);
 
@@ -21,6 +23,20 @@ export function createSocketServer(
         console.log(`[WebSocket] ${sockets.length} connections`);
 
         onConnection?.call(server, socket, request);
+
+        socket.on('message', (data) => {
+            console.log(`Received message: ${data}`);
+            // 广播消息给所有连接的客户端
+            sockets.forEach((client) => {
+                if (client.readyState === client.OPEN) {
+                    client.send(data);
+                }
+            });
+        });
+
+        socket.on('error', (error) => {
+            console.error("WebSocket error:", error);
+        });
     });
 
     server.on('error', console.error);
