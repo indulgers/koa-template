@@ -1,49 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebSocket Client</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Socket.IO Chat</title>
+  <script src="https://cdn.socket.io/4.5.1/socket.io.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    .chat-container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .chat-box {
+      border: 1px solid #ccc;
+      padding: 10px;
+      height: 300px;
+      overflow-y: scroll;
+      margin-bottom: 10px;
+    }
+
+    .message {
+      margin: 5px 0;
+    }
+
+    .message span {
+      font-weight: bold;
+    }
+
+    .input-group {
+      display: flex;
+    }
+
+    .input-group input {
+      flex: 1;
+      padding: 5px;
+    }
+
+    .input-group button {
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+  </style>
 </head>
+
 <body>
-    <h1>WebSocket Client</h1>
-    <div>
-        <input type="text" id="messageInput" placeholder="Enter message">
-        <button onclick="sendMessage()">Send</button>
+  <div class="chat-container">
+    <h1>Socket.IO Chat</h1>
+    <div id="chat-box" class="chat-box"></div>
+    <div id="users" class="message"></div>
+    <div class="input-group">
+      <input id="username" type="text" placeholder="Enter your nickname" />
+      <button id="login">Join Chat</button>
     </div>
-    <div>
-        <h2>Messages</h2>
-        <ul id="messages"></ul>
+    <div class="input-group">
+      <input id="message" type="text" placeholder="Type a message" disabled />
+      <button id="send" disabled>Send</button>
     </div>
+  </div>
 
-    <script>
-        const ws = new WebSocket("ws://localhost:3000");
+  <script>
+    // Connect to the namespace /mupiao
+    const socket = io('http://localhost:3000/');
 
-        ws.onopen = () => {
-            console.log("Connected to WebSocket server");
-        };
+    const chatBox = document.getElementById('chat-box');
+    const usersList = document.getElementById('users');
+    const usernameInput = document.getElementById('username');
+    const loginButton = document.getElementById('login');
+    const messageInput = document.getElementById('message');
+    const sendButton = document.getElementById('send');
 
-        ws.onmessage = (event) => {
-            const messagesList = document.getElementById("messages");
-            const newMessage = document.createElement("li");
-            newMessage.textContent = event.data;
-            messagesList.appendChild(newMessage);
-        };
+    let username = '';
+    socket.on('connect', () => {
+      console.log('Connected to the server!');
 
-        ws.onclose = () => {
-            console.log("Disconnected from WebSocket server");
-        };
+    });
+    // Login to the chat
+    loginButton.addEventListener('click', () => {
+      username = usernameInput.value.trim();
+      if (!username) {
+        alert('Please enter a valid nickname!');
+        return;
+      }
+      socket.emit('login', { user: username });
+    });
 
-        ws.onerror = (error) => {
-            console.error("WebSocket error:", error);
-        };
+    // Send a message
+    sendButton.addEventListener('click', () => {
+      const content = messageInput.value.trim();
+      if (!content) return;
+      socket.emit('message', { user: username, content });
+      messageInput.value = '';
+    });
 
-        function sendMessage() {
-            const messageInput = document.getElementById("messageInput");
-            const message = messageInput.value;
-            ws.send(message);
-            messageInput.value = "";
-        }
-    </script>
+    // 在登录成功后启用输入框和发送按钮
+    socket.on("respond", (msg) => {
+      if (msg.user === "🏡系统" && msg.content.includes(`欢迎你进入聊天室`)) {
+        usernameInput.disabled = true;
+        loginButton.disabled = true;
+        messageInput.disabled = false;
+        sendButton.disabled = false;
+      }
+    });
+
+    // Receive chat messages
+    socket.on('respond', (msg) => {
+      const messageElement = document.createElement('div');
+      messageElement.className = 'message';
+      messageElement.innerHTML = `<span>${msg.user}:</span> ${msg.content}`;
+      chatBox.appendChild(messageElement);
+      chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll to the bottom
+    });
+
+    // Update the user list
+    socket.on('users', (data) => {
+      usersList.textContent = `Online Users: ${data.users.join(', ')}`;
+    });
+
+    // Enable chat input after login
+    socket.on('respond', (msg) => {
+      if (msg.user === '🏡系统' && msg.content.includes(`欢迎你进入聊天室`)) {
+        usernameInput.disabled = true;
+        loginButton.disabled = true;
+        messageInput.disabled = false;
+        sendButton.disabled = false;
+      }
+    });
+
+    // Handle disconnections
+    socket.on('disconnect', () => {
+      const messageElement = document.createElement('div');
+      messageElement.className = 'message';
+      messageElement.innerHTML = `<span>System:</span> You have been disconnected.`;
+      chatBox.appendChild(messageElement);
+    });
+  </script>
 </body>
+
 </html>

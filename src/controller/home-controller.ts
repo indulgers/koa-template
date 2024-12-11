@@ -8,8 +8,8 @@ export default class HomeController {
     summary: 'hello world',
     tags: ['HOME'],
   })
-    async user(ctx:Context  ) {
-    ctx.body = await HomeService.hello();
+  async user(ctx: Context) {
+    ctx.body =  await HomeService.hello();
   }
 
 }

@@ -14,7 +14,7 @@ const router = new SwaggerRouter({
   swaggerHtmlEndpoint: '/swagger-html',
   swaggerJsonEndpoint: '/swagger-json',
 });
-
+router.prefix('/api')
 // 查找对应目录下的controller类
 router.swagger();
 
@@ -24,23 +24,3 @@ router
   .applyRoute(HomeController);  
 
 export default router
-// export type Route = {
-//   path: string;
-//   method: 'get' | 'post' | 'put' | 'delete';
-//   action: any;
-// };
-
-// const Routes: Route[] = [
-//   {
-//     path: '/',
-//     method: 'get',
-//     action: HomeController.user
-//   },
-//   // {
-//   //   path: '/user',
-//   //   method: 'get',
-//   //   action: HomeController.user
-//   // }
-// ];
-
-// export default Routes;
