@@ -61,35 +61,35 @@ export async function main() {
   }
 
   // Confirm resource deletion.
-  const prompt = createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
+  //   const prompt = createInterface({
+  //     input: process.stdin,
+  //     output: process.stdout,
+  //   });
 
-  const result = await prompt.question("Empty and delete bucket? (y/n) ");
-  prompt.close();
+  //   const result = await prompt.question("Empty and delete bucket? (y/n) ");
+  //   prompt.close();
 
-  if (result === "y") {
-    // Create an async iterator over lists of objects in a bucket.
-    const paginator = paginateListObjectsV2(
-      { client: s3Client },
-      { Bucket: bucketName }
-    );
-    for await (const page of paginator) {
-      const objects = page.Contents;
-      if (objects) {
-        // For every object in each page, delete it.
-        for (const object of objects) {
-          await s3Client.send(
-            new DeleteObjectCommand({ Bucket: bucketName, Key: object.Key })
-          );
-        }
-      }
-    }
+  //   if (result === "y") {
+  //     // Create an async iterator over lists of objects in a bucket.
+  //     const paginator = paginateListObjectsV2(
+  //       { client: s3Client },
+  //       { Bucket: bucketName }
+  //     );
+  //     for await (const page of paginator) {
+  //       const objects = page.Contents;
+  //       if (objects) {
+  //         // For every object in each page, delete it.
+  //         for (const object of objects) {
+  //           await s3Client.send(
+  //             new DeleteObjectCommand({ Bucket: bucketName, Key: object.Key })
+  //           );
+  //         }
+  //       }
+  //     }
 
-    // Once all the objects are gone, the bucket can be deleted.
-    await s3Client.send(new DeleteBucketCommand({ Bucket: bucketName }));
-  }
+  //     // Once all the objects are gone, the bucket can be deleted.
+  //     await s3Client.send(new DeleteBucketCommand({ Bucket: bucketName }));
+  //   }
 }
 
 // Call a function if this file was run directly. This allows the file

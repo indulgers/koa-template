@@ -13,8 +13,10 @@
   "scripts": {
     "start": "NODE_ENV=dev nodemon",
     "build": "rm -rf dist && tsc",
+    "type-check": "tsc --noEmit",
     "pro": "node_modules/.bin/pm2 start --env=production",
-    "stop": "node_modules/.bin/pm2 stop all"
+    "stop": "node_modules/.bin/pm2 stop all",
+    "prepare": "husky"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.878.0",
@@ -34,6 +36,7 @@
     "koa-websocket": "^7.0.0",
     "mysql2": "^3.11.5",
     "puppeteer": "^23.10.1",
+    "redis": "^5.8.2",
     "reflect-metadata": "^0.1.13",
     "socket.io": "^4.8.1",
     "typeorm": "^0.3.12",
@@ -48,6 +51,7 @@
     "@types/koa__router": "^12.0.0",
     "@types/node": "^18.0.0",
     "@types/ws": "^8.5.13",
+    "husky": "^9.1.7",
     "nodemon": "^3.0.0",
     "pm2": "^5.0.0",
     "ts-node": "^10.9.0",
