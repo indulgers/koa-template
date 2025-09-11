@@ -7,7 +7,7 @@ import bodyParser from "koa-bodyparser";
 import { createServer } from "http";
 import cors from "@koa/cors";
 import { Server } from "socket.io";
-
+import { PrismaClient } from "@prisma/client";
 // 初始化数据源
 AppDataSource.initialize().then(() => {
   const port = config.port;

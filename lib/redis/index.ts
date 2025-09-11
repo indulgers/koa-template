@@ -1,9 +1,5 @@
 import { createClient, RedisClientType } from "redis";
-// import {
-//   REDIS_KEY_PREFIX,
-//   REDIS_URL,
-//   useLogger,
-// } from "@xmind/flatwhite-server-pkg-common";
+
 const REDIS_KEY_PREFIX = "your_redis_key_prefix";
 const REDIS_URL = "your_redis_url";
 const createRedisClient = (url: string) => {
